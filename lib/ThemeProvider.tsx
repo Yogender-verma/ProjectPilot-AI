@@ -59,7 +59,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setAccentTheme(savedAccent as AccentTheme);
       }
     } catch {
-      // ignore
+      // Ignore localStorage errors.
     }
   }, [setAccentTheme]);
 
@@ -76,9 +76,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-
       localStorage.setItem(ACCENT_STORAGE_KEY, accentTheme);
-    } catch {}
+    } catch {
+      // Ignore localStorage errors.
+    }
   }, [theme, accentTheme]);
 
   const toggleTheme = useCallback(() => {
