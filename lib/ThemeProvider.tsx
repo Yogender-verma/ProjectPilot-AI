@@ -7,11 +7,11 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useAppStore } from "@/store/useAppStore";
+import { useAppStore } from '@/store/useAppStore';
 import {
   ACCENT_THEMES,
   AccentTheme,
-} from "@/store/slices/themeSlice";
+} from '@/store/slices/themeSlice';
 
 export type Theme = 'dark' | 'light';
 
@@ -27,10 +27,10 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const STORAGE_KEY = 'projectpilot-theme';
-const ACCENT_STORAGE_KEY = "projectpilot-accent";
+const ACCENT_STORAGE_KEY = 'projectpilot-accent';
 
 function hexToRgb(hex: string) {
-  const clean = hex.replace("#", "");
+  const clean = hex.replace('#', '');
 
   const bigint = parseInt(clean, 16);
 
@@ -44,77 +44,45 @@ function hexToRgb(hex: string) {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('dark');
 
-  const accentTheme = useAppStore(
-    (state) => state.accentTheme
-  );
+  const accentTheme = useAppStore((state) => state.accentTheme);
 
-  const setAccentTheme = useAppStore(
-    (state) => state.setAccentTheme
-  );
+  const setAccentTheme = useAppStore((state) => state.setAccentTheme);
 
   useEffect(() => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
 
-    if (stored === "light" || stored === "dark") {
-      setThemeState(stored);
-    }
-
-    const savedAccent = localStorage.getItem(
-      ACCENT_STORAGE_KEY
-    );
-
-    if (
-      savedAccent &&
-      savedAccent in ACCENT_THEMES
-    ) {
-      setAccentTheme(savedAccent as AccentTheme);
-    }
-  } catch {
-    // ignore
-  }
-}, [setAccentTheme]);
-
-  useEffect(() => {
-  const root = document.documentElement;
-
-  root.setAttribute("data-theme", theme);
-
-  const colour =
-    ACCENT_THEMES[accentTheme];
-
-  root.style.setProperty(
-    "--color-primary",
-    colour
-  );
-
-  root.style.setProperty(
-    "--color-primary-rgb",
-    hexToRgb(colour)
-  );
-
-  try {
-    localStorage.setItem(STORAGE_KEY, theme);
-
-    localStorage.setItem(
-      ACCENT_STORAGE_KEY,
-      accentTheme
-    );
-  } catch {}
-}, [theme, accentTheme]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const elements = document.querySelectorAll('div[class*="cl-"]');
-      for (let i = 0; i < elements.length; i++) {
-        if (elements[i].textContent?.includes('Configure your application')) {
-          (elements[i] as HTMLElement).style.display = 'none';
-        }
+      if (stored === 'light' || stored === 'dark') {
+        setThemeState(stored);
       }
-    }, 100);
 
-    return () => clearInterval(interval);
-  }, []);
+      const savedAccent = localStorage.getItem(ACCENT_STORAGE_KEY);
+
+      if (savedAccent && savedAccent in ACCENT_THEMES) {
+        setAccentTheme(savedAccent as AccentTheme);
+      }
+    } catch {
+      // ignore
+    }
+  }, [setAccentTheme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.setAttribute('data-theme', theme);
+
+    const colour = ACCENT_THEMES[accentTheme];
+
+    root.style.setProperty('--color-primary', colour);
+
+    root.style.setProperty('--color-primary-rgb', hexToRgb(colour));
+
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+
+      localStorage.setItem(ACCENT_STORAGE_KEY, accentTheme);
+    } catch {}
+  }, [theme, accentTheme]);
 
   const toggleTheme = useCallback(() => {
     setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -125,24 +93,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-  <ThemeContext.Provider
-    value={{
-      theme,
-      toggleTheme,
-      setTheme,
-      accentTheme,
-      setAccentTheme,
-    }}
-  >
-    {children}
-  </ThemeContext.Provider>
-);
+    <ThemeContext.Provider
+      value={{
+        theme,
+        toggleTheme,
+        setTheme,
+        accentTheme,
+        setAccentTheme,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
+
   if (!ctx) {
     throw new Error('useTheme must be used inside a <ThemeProvider>');
   }
+
   return ctx;
 }
