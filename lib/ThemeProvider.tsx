@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, {
   createContext,
@@ -6,14 +6,11 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from 'react';
-import { useAppStore } from '@/store/useAppStore';
-import {
-  ACCENT_THEMES,
-  AccentTheme,
-} from '@/store/slices/themeSlice';
+} from "react";
+import { useAppStore } from "@/store/useAppStore";
+import { ACCENT_THEMES, AccentTheme } from "@/store/slices/themeSlice";
 
-export type Theme = 'dark' | 'light';
+export type Theme = "dark" | "light";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -26,11 +23,11 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = 'projectpilot-theme';
-const ACCENT_STORAGE_KEY = 'projectpilot-accent';
+const STORAGE_KEY = "projectpilot-theme";
+const ACCENT_STORAGE_KEY = "projectpilot-accent";
 
 function hexToRgb(hex: string) {
-  const clean = hex.replace('#', '');
+  const clean = hex.replace("#", "");
 
   const bigint = parseInt(clean, 16);
 
@@ -42,7 +39,7 @@ function hexToRgb(hex: string) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>("dark");
 
   const accentTheme = useAppStore((state) => state.accentTheme);
 
@@ -52,7 +49,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
 
-      if (stored === 'light' || stored === 'dark') {
+      if (stored === "light" || stored === "dark") {
         setThemeState(stored);
       }
 
@@ -69,13 +66,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
 
-    root.setAttribute('data-theme', theme);
+    root.setAttribute("data-theme", theme);
 
     const colour = ACCENT_THEMES[accentTheme];
 
-    root.style.setProperty('--color-primary', colour);
+    root.style.setProperty("--color-primary", colour);
 
-    root.style.setProperty('--color-primary-rgb', hexToRgb(colour));
+    root.style.setProperty("--color-primary-rgb", hexToRgb(colour));
 
     try {
       localStorage.setItem(STORAGE_KEY, theme);
@@ -85,7 +82,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme, accentTheme]);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
@@ -111,7 +108,7 @@ export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
 
   if (!ctx) {
-    throw new Error('useTheme must be used inside a <ThemeProvider>');
+    throw new Error("useTheme must be used inside a <ThemeProvider>");
   }
 
   return ctx;
