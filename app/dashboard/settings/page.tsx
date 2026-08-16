@@ -355,26 +355,39 @@ export default function SettingsPage() {
   const [isImporting, setIsImporting] = useState(false);
   const importFileRef = useRef<HTMLInputElement>(null);
 
-  const handleExportData = async () => {
-    setIsExporting(true);
-    try {
-      const response = await fetch('/api/settings/export');
-      if (!response.ok) throw new Error('Export failed');
+const handleExportData = async () => {
+  setIsExporting(true);
+  try {
+    const response = await fetch('/api/settings/export');
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `project-pilot-export-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsExporting(false);
+    if (!response.ok) {
+      let message = 'Export failed';
+
+      try {
+        const errorData = await response.json();
+        message = errorData.error || message;
+      } catch {
+        // Keep the generic error when the response is not valid JSON.
+      }
+
+      throw new Error(message);
     }
-  };
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `project-pilot-export-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setIsExporting(false);
+  }
+};
 
   const handleImportData = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
