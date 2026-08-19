@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     if (body.projects && Array.isArray(body.projects)) {
       for (const proj of body.projects) {
         // Use a unique ID for upsert, or fallback to cuid if new
-        const projectId = proj.id || Math.random().toString(36).substring(7);
+        const projectId = proj.id || crypto.randomUUID();
         
         await prisma.project.upsert({
           where: { id: projectId },
