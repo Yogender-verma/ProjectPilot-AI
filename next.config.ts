@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
+  skipProxyUrlNormalize: true,
   images: {
     remotePatterns: [
       {
@@ -43,16 +44,6 @@ if (process.env.NODE_ENV === "production") {
     // Upload a larger set of source maps for prettier stack traces (increases build time)
     widenClientFileUpload: true,
 
-    // Automatically annotate React components to show their full name in breadcrumbs and profiles
-    reactComponentAnnotation: {
-      enabled: true,
-    },
-
-    // Hides source maps from visitors
-    hideSourceMaps: true,
-
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
   });
 }
 

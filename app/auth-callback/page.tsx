@@ -8,10 +8,10 @@ export default async function AuthCallbackPage() {
   const clerkUser = await currentUser();
 
   if (!clerkUser) {
-  redirect('/login');
-  } 
+    redirect('/login');
+  }
 
-let syncedDbUser = null;
+  let syncedDbUser = null;
 
   try {
     // Perform database sync using unified helper
@@ -42,4 +42,5 @@ let syncedDbUser = null;
   }
 
   // Direct new accounts to the interactive onboarding wizard
-  redirect('/onboarding');}
+  redirect('/onboarding');
+}
