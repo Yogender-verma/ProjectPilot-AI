@@ -8,8 +8,8 @@ export default async function AuthCallbackPage() {
   const clerkUser = await currentUser();
 
   if (!clerkUser) {
-    redirect('/onboarding');
-  }
+  redirect('/login');
+  } 
 
 let syncedDbUser = null;
 
